@@ -13,9 +13,9 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {path:'/login',component:Login},
-    {path:'/',component:Index,children:[
-      {path:'postlist',component:PostList},
-      {path:'postadd',component:PostAdd},
+    {path:'/',component:Index,meta:'文章管理',children:[
+      {path:'postlist',component:PostList,meta:'文章列表'},
+      {path:'postadd',component:PostAdd,meta:'发布文章'},
     ]},
 
   ]

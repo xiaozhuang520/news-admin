@@ -4,7 +4,7 @@
       <h1>黑马头条</h1>
       <el-menu
         default-active="1"
-        class="el-menu-vertical-demo"
+        class="el-menu-vertical-demo menu"
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b"
@@ -31,6 +31,7 @@
           <span @click="handleLoginOut">退出</span>
       </el-header>
       <el-main>
+        <div class="bread_crumbs">{{breaks}}</div>
           <router-view></router-view>
       </el-main>
     </el-container>

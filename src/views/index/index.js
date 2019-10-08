@@ -3,7 +3,18 @@ export default {
         return {
             user:{
                 user:{}
-            }
+            },
+            
+        }
+    },
+    computed:{
+        breaks(){
+            const {matched}=this.$route;
+            const arr=[];
+            matched.forEach(e=>{
+                arr.push(e.meta)
+            })
+            return arr.join(' / ')
         }
     },
     methods:{
