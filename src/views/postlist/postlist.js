@@ -9,7 +9,7 @@ export default {
     },
     methods: {
         handleEdit(index, row) {
-            console.log(index, row);
+            this.$router.push('/post_edit/'+row.id)
         },
         handleDelete(index, row) {
             const id = row.id

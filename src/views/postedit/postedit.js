@@ -5,13 +5,11 @@ export default {
     data() {
         return {
             form: {
-                categories: [],
                 title: '',
                 content: '',
                 cover: [],
                 type: 1
             },
-            allCate: [],
             token: '',
             config: {
                 // 上传图片的配置
@@ -19,7 +17,7 @@ export default {
                     url: this.$axios.defaults.baseURL + "/upload",
                     name: "file",
                     headers: {
-                        Authorization: JSON.parse(localStorage.getItem('user') || `{}`).token 
+                        Authorization: JSON.parse(localStorage.getItem('user') || `{}`).token
                     },
                     // res是结果，insert方法会把内容注入到编辑器中，res.data.url是资源地址
                     uploadSuccess: (res, insert) => {
@@ -41,28 +39,13 @@ export default {
         }
     },
     methods: {
+        // 编辑文章或视频
         onSubmit() {
-            const { categories } = this.form;
-            const arr = [];
-            categories.forEach(e => {
-                arr.push({
-                    id: e
-                })
-            })
-            const { cover }=this.form;
-            cover.forEach((item,index)=>{
-                if(item.url.indexOf('http')===-1){
-                    item.url=this.$axios.defaults.baseURL+item.url;
-                }
-            })
-            this.form.categories = arr;
-
             if (this.form.type === 1) {
                 this.form.content = this.$refs.vueEditor.editor.root.innerHTML;
             }
-           
             this.$axios({
-                url:'/post',
+                url:'/post_update/'+this.$route.params.id,
                 method:'post',
                 headers:{
                     Authorization :JSON.parse(localStorage.getItem('user') || `{}`).token
@@ -70,29 +53,27 @@ export default {
                 data:this.form
             }).then(res=>{
                 const {message}=res.data;
-                if(message==='文章发布成功'){
+                if(message==='文章编辑成功'){
                     this.$message.success(message);
-                    
-                }
 
+                }
             })
 
         },
         // 上传图片
         handleAvatarSuccess(res, file) {
+            if (res.data.url.indexOf('http') === -1) {
+
+                res.data.url = this.$axios.defaults.baseURL + res.data.url;
+            }
+            delete res.data.uid
+            
             this.form.cover.push(res.data)
+            
         },
         // 移除图片
         handleRemove(file, fileList) {
-            const id = file.response.data.id;
-            const { cover } = this.form;
-            const arr = [];
-            cover.forEach(e => {
-                if (e.id !== id) {
-                    arr.push(e)
-                }
-            })
-            this.form.cover = arr;
+            this.form.cover = fileList;
 
         },
         // 视频上传成功
@@ -101,16 +82,26 @@ export default {
         }
     },
     mounted() {
+        // 获取token
         this.token = JSON.parse(localStorage.getItem('user') || `{}`).token;
 
         this.$axios({
-            url: '/category',
-            headers: {
-                Authorization: JSON.parse(localStorage.getItem('user') || `{}`).token
-            }
+            url: '/post/' + this.$route.params.id
         }).then(res => {
             const { data } = res.data;
-            this.allCate = data
+            this.form = {
+                title: data.title,
+                type: data.type,
+                content: this.$refs.vueEditor.editor.clipboard.dangerouslyPasteHTML(0, data.content),
+                cover: data.cover
+                
+            }
+            const { cover }=this.form;
+            cover.forEach((item,index)=>{
+                if(item.url.indexOf('http')===-1){
+                    item.url=this.$axios.defaults.baseURL+item.url;
+                }
+            })
         })
     },
     components: {

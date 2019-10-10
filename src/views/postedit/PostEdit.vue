@@ -26,17 +26,7 @@
           
         </el-upload>
       </el-form-item>
-      <el-form-item label="栏目">
-        <el-checkbox-group v-model="form.categories">
-          <el-checkbox
-            :label="item.id"
-            name="type"
-            v-for="(item,index) in allCate"
-            :key="index"
-            v-if="item.id !==999"
-          >{{item.name}}</el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
+     
       <el-form-item label="封面">
         <el-upload
           action="http://127.0.0.1:3000/upload"
@@ -46,6 +36,7 @@
           :headers="{
             Authorization:token
           }"
+          :file-list="form.cover"
         >
           <i class="el-icon-plus"></i>
         </el-upload>
@@ -59,10 +50,10 @@
 </template>
 
 <script>
-import config from "./postadd.js";
+import config from "./postedit.js";
 export default config;
 </script>
 
 <style scoped lang="less">
-@import url("./postadd.less");
+@import url("./postedit.less");
 </style>
